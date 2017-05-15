@@ -1,0 +1,119 @@
+
+int trig_av = 12; 
+int echo_av = 11; 
+long lecture_echo_av; 
+long cm_av;
+int com_av = 9;
+
+int trig_ar =7; 
+int echo_ar = 8; 
+long lecture_echo_ar; 
+long cm_ar;
+int com_ar = 10;
+
+int cm_min = 15;
+long t;
+long t2 = 0;
+int detection_av;
+int detection_ar;
+
+void setup() 
+{ 
+  pinMode(trig_av, OUTPUT); 
+  digitalWrite(trig_av, LOW); 
+  pinMode(echo_av, INPUT); 
+  digitalWrite(com_av,LOW);
+  
+  pinMode(trig_ar, OUTPUT); 
+  digitalWrite(trig_ar, LOW); 
+  pinMode(echo_ar, INPUT); 
+  digitalWrite(com_ar,LOW);
+
+ 
+}
+
+void loop() 
+{ 
+  //MARCHE AVANT##############################################################################
+    
+    //distance pour init valeur
+    digitalWrite(trig_av, HIGH); 
+    delayMicroseconds(10); 
+    digitalWrite(trig_av, LOW); 
+    lecture_echo_av = pulseIn(echo_av, HIGH); 
+    cm_av = lecture_echo_av / 58;
+
+    t2 = millis();
+    t = millis();
+    while(cm_av <= 15 && (t - millis() < 100) ) // réactualise distance pendant 100ms
+      {
+       digitalWrite(trig_av, HIGH); 
+       delayMicroseconds(10); 
+       digitalWrite(trig_av, LOW); 
+       lecture_echo_av = pulseIn(echo_av, HIGH); 
+       cm_av = lecture_echo_av / 58;
+       t2 = millis(); }
+
+    if((t2 - t) >= 100 ) // vérifie que sortie du While cause par le temps (dist < 15 cm pd 100ms)
+    {
+      detection_av = 1;
+    }
+    else // ne rentre pas dans le while => dist > 15
+    {
+      detection_av = 0;
+    }
+
+
+
+  
+  //MARCHE ARRIERE#############################################################################
+    t2 = 0;
+    digitalWrite(trig_ar, HIGH); 
+    delayMicroseconds(10); 
+    digitalWrite(trig_ar, LOW); 
+    lecture_echo_ar = pulseIn(echo_ar, HIGH); 
+    cm_ar = lecture_echo_ar / 58; 
+    t = millis();
+    t2 = millis();
+    while(cm_ar <= 15 && (t - millis() < 100) )
+      {
+       digitalWrite(trig_ar, HIGH); 
+       delayMicroseconds(10); 
+       digitalWrite(trig_ar, LOW); 
+       lecture_echo_ar = pulseIn(echo_ar, HIGH); 
+       cm_ar = lecture_echo_ar / 58; 
+       t2 = millis();
+       }
+
+    if((t2 - t) >= 100 ) 
+    {
+      detection_ar = 1;
+    }
+    else
+    {
+      detection_ar = 0;
+    }
+
+
+    switch (detection_av) {
+    case 0:
+      digitalWrite(com_av,LOW);
+      break;
+    case 1:
+      digitalWrite(com_av,HIGH);
+      break;
+    switch (detection_ar) {
+    case 0:
+      digitalWrite(com_ar,LOW);
+      break;
+    case 1:
+      digitalWrite(com_ar,HIGH);
+      break;
+    
+  }
+    }}
+ 
+  
+  
+
+
